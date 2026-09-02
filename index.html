@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reusable ESG & BRSR Rating Portal</title>
+<style>
+:root{--navy:#17324d;--green:#2f8f46;--bg:#f4f7f9;--card:#fff;--line:#dbe3e9;--text:#17212b;--muted:#64748b;--amber:#b7791f;--red:#b42318}
+*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,Helvetica,sans-serif}
+.wrap{max-width:1250px;margin:0 auto;padding:24px}.hero{background:linear-gradient(135deg,#17324d,#24516f);color:#fff;border-radius:22px;padding:28px;box-shadow:0 8px 25px #17324d20}
+h1{font-size:34px;margin:5px 0 8px}.hero p{margin:6px 0;color:#d9e6ef}.big{font-size:42px;font-weight:800;color:#56bd6d}.muted,.small{color:var(--muted);font-size:13px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0}.tab{border:1px solid #cbd5e1;background:#fff;padding:11px 15px;border-radius:10px;font-weight:700;cursor:pointer}.tab.active{background:var(--navy);color:#fff}
+.panel{display:none}.panel.active{display:block}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:14px;box-shadow:0 3px 12px #17324d0b}
+.card h2,.card h3{margin-top:0}.scorecard{min-height:135px}.pill{display:inline-block;padding:5px 9px;border-radius:999px;background:#eaf1f4;font-size:12px;font-weight:700}.pill.green{background:#e8f5eb;color:#226b34}.pill.amber{background:#fff5df;color:#8a5b00}.pill.red{background:#fdecec;color:#a41e16}
+.bar{height:11px;background:#e5e7eb;border-radius:9px;overflow:hidden;margin:8px 0}.fill{height:100%;background:var(--green)}
+button{font:inherit}.btn{padding:10px 14px;border-radius:10px;border:1px solid #cbd5e1;background:#fff;cursor:pointer;font-weight:700}.btn.primary{background:var(--navy);color:#fff}.btn.green{background:var(--green);color:#fff;border-color:var(--green)}
+input,select{width:100%;padding:9px 10px;border:1px solid #cbd5e1;border-radius:8px;background:#fff}.field{margin-bottom:10px}.field label{display:block;font-size:12px;font-weight:700;margin-bottom:5px}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}th{background:var(--navy);color:#fff;position:sticky;top:0}
+.scroll{overflow:auto}.notice{padding:12px;border-radius:10px;background:#f1f5f9;margin:10px 0}.notice.warn{background:#fff7e6}.source{font-size:12px;color:#52606d}
+.metric{font-size:22px;font-weight:800}.right{text-align:right}.center{text-align:center}.hidden{display:none}
+.filebox{border:2px dashed #cbd5e1;border-radius:12px;padding:18px;text-align:center;background:#fafcfd}
+.legend{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}.kpi{font-size:30px;font-weight:800}
+.compare-good{background:#edf8ef}.compare-warn{background:#fff8e7}.compare-na{background:#f1f5f9}
+footer{padding:15px 0 5px;color:var(--muted);font-size:12px}
+@media(max-width:800px){.grid,.grid2{grid-template-columns:1fr}.wrap{padding:12px}.hero{padding:20px}h1{font-size:28px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<section class="hero">
+  <div style="font-size:13px;font-weight:700;letter-spacing:.5px">SRCE ASSIGNMENT • REUSABLE ESG SYSTEM</div>
+  <h1>ESG & BRSR Rating Portal</h1>
+  <p>Upload one company report for an individual ESG rating, or two BRSR reports for a structured comparison.</p>
+  <div style="margin-top:16px">
+    <span class="pill green">1-company rating</span>
+    <span class="pill">2-company comparison</span>
+    <span class="pill">0–100 score</span>
+    <span class="pill">12 indicators</span>
+    <span class="pill">BRSR evidence scan</span>
+  </div>
+</section>
+
+<div class="tabs">
+  <button class="tab active" data-tab="home">Start / Upload</button>
+  <button class="tab" data-tab="single">1 Company ESG Rating</button>
+  <button class="tab" data-tab="compare">Compare 2 Companies</button>
+  <button class="tab" data-tab="method">Methodology</button>
+</div>
+
+<section id="home" class="panel active">
+  <div class="grid2">
+    <div class="card">
+      <h2>1. Individual company</h2>
+      <p>Upload one sustainability report or BRSR. The portal attempts to find common ESG disclosures, then lets you review and edit the evidence before scoring.</p>
+      <div class="field"><label>Company name</label><input id="homeCompany" value="ITC Limited"></div>
+      <div class="field"><label>Report year</label><input id="homeYear" value="FY 2024-25"></div>
+      <div class="filebox"><input type="file" id="singlePdf" accept=".pdf"><p class="small">Machine-readable PDF works best.</p></div>
+      <button class="btn primary" id="goSingle">Open 1-company rating</button>
+    </div>
+    <div class="card">
+      <h2>2. Compare two companies</h2>
+      <p>Upload two BRSR or sustainability reports. The portal creates a side-by-side evidence table, BRSR principle coverage check and comparable/non-comparable flags.</p>
+      <div class="grid2">
+        <div class="field"><label>Company A</label><input id="cmpAName" value="ITC Limited"></div>
+        <div class="field"><label>Company B</label><input id="cmpBName" value="Hindustan Unilever Limited"></div>
+      </div>
+      <div class="grid2">
+        <div class="filebox"><input type="file" id="pdfA" accept=".pdf"></div>
+        <div class="filebox"><input type="file" id="pdfB" accept=".pdf"></div>
+      </div>
+      <button class="btn primary" id="goCompare">Open 2-company comparison</button>
+    </div>
+  </div>
+  <div class="card">
+    <h3>How reuse works</h3>
+    <ol>
+      <li>Upload the new company's BRSR or sustainability report.</li>
+      <li>Review the automatically found evidence and source page numbers.</li>
+      <li>Enter or correct the actual value and target/benchmark where required.</li>
+      <li>Use the fixed 12-indicator scoring rules to calculate the score.</li>
+      <li>For two companies, the same evidence architecture is applied side by side.</li>
+    </ol>
+    <div class="notice warn"><b>Important:</b> this is a student-designed academic tool. Automatic extraction is a candidate-finding aid, not a substitute for reading and verifying the source report. Missing or non-comparable data is never silently treated as zero.</div>
+  </div>
+</section>
+
+<section id="single" class="panel">
+  <div class="grid">
+    <div class="card scorecard"><div class="muted">Company</div><div id="sName" class="metric">ITC Limited</div><div id="sYear" class="small">FY 2024-25</div></div>
+    <div class="card scorecard"><div class="muted">Overall ESG score</div><div id="sOverall" class="kpi">93.73</div><span id="sRating" class="pill green">Outstanding</span></div>
+    <div class="card scorecard"><div class="muted">Evidence status</div><div id="sEvidence" class="metric">Baseline loaded</div><div class="small">Review all auto-found values before submission.</div></div>
+  </div>
+  <div class="grid">
+    <div class="card"><b>Environmental</b><div id="sE" class="big">97.75</div><div class="small">40% weight</div><div class="bar"><div id="barE" class="fill" style="width:97.75%"></div></div></div>
+    <div class="card"><b>Social</b><div id="sS" class="big">86.13</div><div class="small">30% weight</div><div class="bar"><div id="barS" class="fill" style="width:86.13%"></div></div></div>
+    <div class="card"><b>Governance</b><div id="sG" class="big">95.97</div><div class="small">30% weight</div><div class="bar"><div id="barG" class="fill" style="width:95.97%"></div></div></div>
+  </div>
+  <div class="card">
+    <h2>Indicator evidence and scoring</h2>
+    <p class="small">Green = verified/manual value entered. Amber = auto-found candidate requiring review. Grey = not available/comparable. The score uses only indicators with a valid score.</p>
+    <div class="scroll"><table id="singleTable"></table></div>
+    <div style="margin-top:12px"><button class="btn green" id="recalcSingle">Recalculate score</button> <button class="btn" id="resetSingle">Reset to ITC baseline</button></div>
+  </div>
+</section>
+
+<section id="compare" class="panel">
+  <div class="grid">
+    <div class="card"><div class="muted">Company A</div><div id="cAName" class="metric">ITC Limited</div><div id="cAScore" class="kpi">93.73</div><span id="cARating" class="pill green">Outstanding</span></div>
+    <div class="card"><div class="muted">Company B</div><div id="cBName" class="metric">Hindustan Unilever Limited</div><div id="cBScore" class="kpi">—</div><span id="cBRating" class="pill">Not scored</span></div>
+    <div class="card"><div class="muted">Comparison purpose</div><div class="metric">BRSR + ESG</div><div class="small">Evidence comparison, not an official rating-agency comparison.</div></div>
+  </div>
+  <div class="card">
+    <h2>BRSR evidence comparison</h2>
+    <p class="small">The portal checks whether a theme is disclosed and whether the metric appears comparable. Different baselines, denominators, boundaries or definitions are flagged rather than forced into a misleading ranking.</p>
+    <div class="scroll"><table id="compareTable"></table></div>
+  </div>
+  <div class="card">
+    <h2>BRSR Principle coverage</h2>
+    <div class="scroll"><table id="principleTable"></table></div>
+  </div>
+  <div class="card">
+    <h2>Two-company ESG score comparison</h2>
+    <p class="small">To calculate Company B's score, review its indicator evidence in the comparison table and enter valid scores in the individual-company workflow. A score is not generated from disclosure presence alone.</p>
+    <div class="grid2">
+      <div><div class="metric" id="compPillA">ITC: 93.73</div><div class="small">Current portal baseline</div></div>
+      <div><div class="metric" id="compPillB">Company B: —</div><div class="small">Enter verified indicator scores to calculate</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="method" class="panel">
+  <div class="card">
+    <h2>Fixed 12-indicator ESG framework</h2>
+    <div class="scroll"><table><thead><tr><th>Code</th><th>Pillar</th><th>Indicator</th><th>Weight</th><th>Default scoring logic</th></tr></thead><tbody id="methodTable"></tbody></table></div>
+  </div>
+  <div class="grid2">
+    <div class="card"><h3>Scoring rules</h3>
+      <p><b>Target attainment:</b> MIN(100, Actual ÷ Target × 100).</p>
+      <p><b>Benchmark attainment:</b> MIN(100, Actual ÷ Benchmark × 100), where higher is better.</p>
+      <p><b>Outcome rubric:</b> 0 / 25 / 50 / 75 / 100 based on outcome, scale, trend and evidence.</p>
+      <p><b>Governance rubric:</b> 0 / 25 / 50 / 75 / 100 based on structure, performance, compliance and assurance.</p>
+    </div>
+    <div class="card"><h3>Reliability and scalability</h3>
+      <ul><li>Automatic extraction is candidate extraction only.</li><li>Source page and evidence text are retained for review.</li><li>“Not comparable” is available when metrics differ.</li><li>The framework, weights and formulas remain fixed across companies.</li><li>Sector-specific modules can be added later.</li></ul>
+    </div>
+  </div>
+</section>
+
+<div class="card" style="margin-top:16px"><b>GitHub Pages mode:</b> This portal runs in the browser. PDF extraction uses PDF.js loaded from a public CDN. Automatic extraction is candidate finding only; verify every value against the original report.</div><footer>Academic prototype • Student-designed ESG methodology • Use official BRSR/Sustainability Report disclosures and verify every extracted value before final submission.</footer>
+</div>
+
+<script>
+const indicators=[
+{code:"E1",pillar:"Environmental",name:"GHG intensity reduction",weight:10,logic:"Target attainment",keywords:["ghg intensity","scope 1 and scope 2","scope 1+2","greenhouse gas intensity"]},
+{code:"E2",pillar:"Environmental",name:"Renewable energy share",weight:10,logic:"Target attainment",keywords:["renewable energy","renewable sources","renewable share"]},
+{code:"E3",pillar:"Environmental",name:"Energy intensity improvement",weight:10,logic:"Benchmark / target",keywords:["energy intensity","energy consumption per","energy intensity reduction"]},
+{code:"E4",pillar:"Environmental",name:"Waste and circularity",weight:10,logic:"Performance / outcome",keywords:["waste recycled","waste recycling","recycled or reused","zero waste to landfill"]},
+{code:"S1",pillar:"Social",name:"Employee health and safety",weight:8,logic:"Outcome rubric",keywords:["injury rate","lost time","lost-time","fatalities","occupational health and safety"]},
+{code:"S2",pillar:"Social",name:"Diversity and inclusion",weight:7,logic:"Benchmark / target",keywords:["women in workforce","women employees","female employees","women representation"]},
+{code:"S3",pillar:"Social",name:"Employee development",weight:7,logic:"Benchmark / target",keywords:["training hours","average training","learning hours","training per employee"]},
+{code:"S4",pillar:"Social",name:"Community and farmer livelihoods",weight:8,logic:"Outcome rubric",keywords:["sustainable livelihoods","livelihoods","farmer livelihoods","community impact"]},
+{code:"G1",pillar:"Governance",name:"Board independence and effectiveness",weight:8,logic:"Governance rubric",keywords:["independent directors","independent director","board attendance","board composition"]},
+{code:"G2",pillar:"Governance",name:"Ethics and anti-corruption",weight:8,logic:"Governance rubric",keywords:["anti-bribery","anti-corruption","code of conduct","whistleblower"]},
+{code:"G3",pillar:"Governance",name:"Risk management and compliance",weight:7,logic:"Governance rubric",keywords:["risk management","compliance","secretarial audit","risk committee"]},
+{code:"G4",pillar:"Governance",name:"ESG governance and transparency",weight:7,logic:"Governance rubric",keywords:["materiality","sustainability committee","esg governance","external assurance","assurance"]}
+];
+
+const itcBaseline={
+name:"ITC Limited",year:"FY 2024-25",
+scores:{E1:92,E2:100,E3:100,E4:99,S1:95,S2:82,S3:70,S4:95,G1:96,G2:95,G3:95,G4:98},
+evidence:{
+E1:"46% reduction in Scope 1 and Scope 2 GHG intensity vs FY2018-19; 50% target",
+E2:"52% renewable energy share; 50% 2030 target",
+E3:"31% reduction in energy intensity vs FY2018-19",
+E4:"About 99% solid waste recycled",
+S1:"0.024 injury rate; 52 units with zero on-site lost-time accidents",
+S2:"16.4% women in total workforce",
+S3:"28 average training hours per permanent employee",
+S4:"About 9 million sustainable livelihoods supported",
+G1:"16-member board; 8 independent directors; 96.18% attendance",
+G2:"Board-approved code; anti-bribery / anti-corruption requirements",
+G3:"Secretarial audit, compliance systems and risk oversight",
+G4:"Double materiality, board oversight and external assurance"
+},
+source:{E1:"ITC Sustainability Report 2025",E2:"ITC Sustainability Report 2025",E3:"ITC Sustainability Report 2025",E4:"ITC Sustainability Report 2025",S1:"ITC Sustainability Report 2025",S2:"ITC ESG Fact Book 2025",S3:"ITC ESG Fact Book 2025",S4:"ITC Sustainability Report 2025",G1:"ITC ESG Fact Book 2025",G2:"ITC ESG Fact Book 2025",G3:"ITC Report and Accounts 2025 / BRSR",G4:"ITC ESG Fact Book 2025"},
+page:{E1:"38-40",E2:"38-40",E3:"38-40",E4:"7",S1:"",S2:"",S3:"",S4:"7",G1:"",G2:"",G3:"",G4:""}
+};
+
+let single={...itcBaseline, fileText:"", fileName:"", candidates:{}};
+let companyB={name:"Company B",year:"",fileText:"",fileName:"",candidates:{}};
+
+function rating(score){if(score>=90)return"Outstanding";if(score>=75)return"Strong";if(score>=60)return"Moderate";if(score>=40)return"Weak";return"Critical"}
+function scoreClass(score){return score>=90?"green":score>=75?"":"amber"}
+
+function calc(scores){
+  let total=0, denom=0, pillars={Environmental:[0,0],Social:[0,0],Governance:[0,0]};
+  indicators.forEach(i=>{
+    const s=Number(scores[i.code]);
+    if(Number.isFinite(s)&&s>=0&&s<=100){total+=s*i.weight;denom+=i.weight;pillars[i.pillar][0]+=s*i.weight;pillars[i.pillar][1]+=i.weight}
+  });
+  const overall=denom?total/denom:null;
+  return {overall,pillars:Object.fromEntries(Object.entries(pillars).map(([k,v])=>[k,v[1]?v[0]/v[1]:null]))};
+}
+
+function setSingleSummary(){
+ const c=calc(single.scores); const overall=c.overall;
+ document.getElementById("sName").textContent=single.name;
+ document.getElementById("sYear").textContent=single.year||"Report year not entered";
+ document.getElementById("sOverall").textContent=overall==null?"—":overall.toFixed(2);
+ document.getElementById("sRating").textContent=overall==null?"Not scored":rating(overall);
+ document.getElementById("sRating").className="pill "+(overall!=null&&overall>=90?"green":overall!=null&&overall>=75?"":"amber");
+ ["Environmental","Social","Governance"].forEach(p=>{
+   const id=p==="Environmental"?"E":p==="Social"?"S":"G";
+   const v=c.pillars[p];
+   document.getElementById("s"+id).textContent=v==null?"—":v.toFixed(2);
+   document.getElementById("bar"+id).style.width=(v||0)+"%";
+ });
+}
+
+function renderSingle(){
+ let h="<thead><tr><th>Code</th><th>Indicator</th><th>Weight</th><th>Evidence / extracted text</th><th>Source page</th><th>Score (0–100)</th><th>Status</th></tr></thead><tbody>";
+ indicators.forEach(i=>{
+   const status=single.candidates[i.code]?"Auto-found — review":"Manual / baseline";
+   const evidence=single.candidates[i.code]||single.evidence[i.code]||"";
+   const page=single.page[i.code]||"";
+   const s=single.scores[i.code];
+   h+=`<tr><td><b>${i.code}</b></td><td>${i.name}<br><span class="small">${i.logic}</span></td><td>${i.weight}%</td><td><textarea id="ev_${i.code}" style="width:100%;min-height:58px;border:1px solid #cbd5e1;border-radius:7px;padding:7px">${escapeHtml(evidence)}</textarea></td><td><input id="pg_${i.code}" value="${escapeAttr(page)}" placeholder="e.g. 42"></td><td><input id="sc_${i.code}" type="number" min="0" max="100" step="0.01" value="${s==null?"":s}"></td><td><span class="pill ${single.candidates[i.code]?"amber":"green"}">${status}</span></td></tr>`;
+ });
+ h+="</tbody>"; document.getElementById("singleTable").innerHTML=h; setSingleSummary();
+}
+function applySingleInputs(){
+ indicators.forEach(i=>{
+   const sc=Number(document.getElementById("sc_"+i.code).value);
+   single.scores[i.code]=Number.isFinite(sc)&&document.getElementById("sc_"+i.code).value!==""?Math.max(0,Math.min(100,sc)):null;
+   single.evidence[i.code]=document.getElementById("ev_"+i.code).value;
+   single.page[i.code]=document.getElementById("pg_"+i.code).value;
+ });
+ single.name=document.getElementById("sName").textContent;
+}
+function escapeHtml(x){return String(x||"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;")}
+function escapeAttr(x){return escapeHtml(x)}
+
+async function extractPdf(file){
+  if(!file)return"";
+  if(!window.pdfjsLib){throw new Error("PDF reader is still loading. Try again in a moment.");}
+  const buf=await file.arrayBuffer();
+  const pdf=await pdfjsLib.getDocument({data:buf}).promise; let text="";
+  for(let p=1;p<=pdf.numPages;p++){
+    const page=await pdf.getPage(p); const content=await page.getTextContent();
+    text+="\n--- PAGE "+p+" ---\n"+content.items.map(x=>x.str).join(" ");
+    if(text.length>300000)break;
+  }
+  return text;
+}
+function findCandidates(text){
+ const out={}; const low=text.toLowerCase();
+ indicators.forEach(i=>{
+   let best=-1,bestPos=-1;
+   i.keywords.forEach(k=>{const pos=low.indexOf(k.toLowerCase());if(pos>=0&&pos>bestPos){bestPos=pos;best=k}});
+   if(bestPos>=0){
+     const start=Math.max(0,bestPos-180),end=Math.min(text.length,bestPos+520);
+     const snippet=text.slice(start,end).replace(/\s+/g," ").trim();
+     const pg=(text.slice(0,bestPos).match(/--- PAGE \d+ ---/g)||[]).length;
+     out[i.code]=snippet+(pg?"":"");
+     single.page[i.code]=pg?String(pg):"";
+   }
+ });
+ return out;
+}
+function parseLikelyPercent(snippet){
+ const m=String(snippet||"").match(/(\d+(?:\.\d+)?)\s*%/); return m?Number(m[1]):null;
+}
+function inferScoresFromCandidates(){
+ indicators.forEach(i=>{
+   const sn=single.candidates[i.code]||"";
+   const pct=parseLikelyPercent(sn);
+   if(pct!=null){
+     if(["E4","S2"].includes(i.code)) single.scores[i.code]=pct;
+     else if(["E1","E2","E3"].includes(i.code) && pct<=100){
+       // Candidate only; do not pretend the report's percentage equals a score.
+       // Keep existing baseline score if present.
+     }
+   }
+ });
+}
+
+async function loadSingle(file){
+ document.getElementById("sEvidence").textContent="Reading PDF…";
+ if(file){
+   try{single.fileText=await extractPdf(file);single.fileName=file.name;single.candidates=findCandidates(single.fileText);inferScoresFromCandidates();document.getElementById("sEvidence").textContent="Auto-found — review";renderSingle();}
+   catch(e){document.getElementById("sEvidence").textContent="Manual review";alert(e.message)}
+ }
+}
+async function loadB(file){
+ companyB.fileName=file?file.name:"";
+ if(file){
+  try{companyB.fileText=await extractPdf(file);companyB.candidates=findCandidatesForText(companyB.fileText);renderCompare();}
+  catch(e){alert(e.message)}
+ }
+}
+function findCandidatesForText(text){
+ const out={};const low=text.toLowerCase();
+ indicators.forEach(i=>{
+  let bestPos=-1;
+  i.keywords.forEach(k=>{const pos=low.indexOf(k.toLowerCase());if(pos>=0&&pos>bestPos)bestPos=pos});
+  if(bestPos>=0){
+   const start=Math.max(0,bestPos-180),end=Math.min(text.length,bestPos+520);
+   out[i.code]=text.slice(start,end).replace(/\s+/g," ").trim();
+  }
+ });
+ return out;
+}
+function candidatePrinciples(text){
+ const low=(text||"").toLowerCase(); return Array.from({length:9},(_,n)=>({p:"P"+(n+1),found:low.includes("principle "+(n+1))||low.includes("p"+(n+1))}));
+}
+function renderCompare(){
+ document.getElementById("cAName").textContent=single.name;
+ document.getElementById("cBName").textContent=companyB.name;
+ document.getElementById("cAScore").textContent=(calc(single.scores).overall||0).toFixed(2);
+ document.getElementById("cARating").textContent=rating(calc(single.scores).overall||0);
+ document.getElementById("compPillA").textContent=single.name+": "+((calc(single.scores).overall||0).toFixed(2));
+ const h="<thead><tr><th>Indicator / BRSR theme</th><th>"+escapeHtml(single.name)+"</th><th>"+escapeHtml(companyB.name)+"</th><th>Comparability</th></tr></thead><tbody>"+
+ indicators.map(i=>{
+  const a=single.evidence[i.code]||single.candidates[i.code]||"Not available";
+  const b=companyB.candidates[i.code]||"Not found — manual review";
+  const comparable = a!=="Not available" && b!=="Not found — manual review";
+  return `<tr><td><b>${i.code}</b> ${i.name}<br><span class="small">${i.logic}</span></td><td>${escapeHtml(short(a))}</td><td>${escapeHtml(short(b))}</td><td class="${comparable?"compare-warn":"compare-na"}">${comparable?"Potentially comparable — verify definition, boundary, baseline and unit.":"Not comparable yet — obtain the metric from the report."}</td></tr>`;
+ }).join("")+"</tbody>";
+ document.getElementById("compareTable").innerHTML=h;
+ const pa=candidatePrinciples(single.fileText||""); const pb=candidatePrinciples(companyB.fileText||"");
+ document.getElementById("principleTable").innerHTML="<thead><tr><th>Principle</th><th>Theme</th><th>"+escapeHtml(single.name)+"</th><th>"+escapeHtml(companyB.name)+"</th></tr></thead><tbody>"+
+ pa.map((x,k)=>`<tr><td>${x.p}</td><td>${["Integrity and ethics","Sustainable goods/services","Employee wellbeing","Stakeholder engagement","Human rights","Environment","Public/regulatory policy","Inclusive growth","Consumer value"][k]}</td><td>${x.found?"✓ Disclosed":"Review report"}</td><td>${pb[k].found?"✓ Disclosed":"Review report"}</td></tr>`).join("")+"</tbody>";
+}
+function short(s){s=String(s||"");return s.length>520?s.slice(0,520)+"…":s}
+
+function resetITC(){single=JSON.parse(JSON.stringify(itcBaseline));document.getElementById("sName").textContent=single.name;renderSingle()}
+document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));document.querySelectorAll(".panel").forEach(x=>x.classList.remove("active"));b.classList.add("active");document.getElementById(b.dataset.tab).classList.add("active");if(b.dataset.tab==="compare")renderCompare()}));
+document.getElementById("singlePdf").addEventListener("change",e=>loadSingle(e.target.files[0]));
+document.getElementById("pdfA").addEventListener("change",e=>loadSingle(e.target.files[0]).then(()=>{single.name=document.getElementById("cmpAName").value;renderCompare()}));
+document.getElementById("pdfB").addEventListener("change",e=>loadB(e.target.files[0]));
+document.getElementById("goSingle").addEventListener("click",()=>{single.name=document.getElementById("homeCompany").value||"Company";single.year=document.getElementById("homeYear").value||"";document.querySelector('[data-tab="single"]').click();renderSingle();});
+document.getElementById("goCompare").addEventListener("click",()=>{single.name=document.getElementById("cmpAName").value||"Company A";companyB.name=document.getElementById("cmpBName").value||"Company B";document.querySelector('[data-tab="compare"]').click();renderCompare();});
+document.getElementById("recalcSingle").addEventListener("click",()=>{applySingleInputs();setSingleSummary();renderSingle()});
+document.getElementById("resetSingle").addEventListener("click",resetITC);
+
+document.getElementById("methodTable").innerHTML=indicators.map(i=>`<tr><td>${i.code}</td><td>${i.pillar}</td><td>${i.name}</td><td>${i.weight}%</td><td>${i.logic}</td></tr>`).join("");
+renderSingle();renderCompare();
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>if(window.pdfjsLib){pdfjsLib.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";}</script>
+</body>
+</html>
